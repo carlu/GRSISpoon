@@ -99,9 +99,11 @@ int TParser::TigressDATAToFragment(int *data, int size,unsigned int midasserialn
 					int tsBits;
 					int cfdBits;
 					if ( eventfragment->DigitizerType == "tig10" ) {
-						cfdBits = (eventfragment->Cfd >> 4);
-						tsBits  = eventfragment->TimeStampLow & 0x007fffff;
-
+						// Modifed for testing CFD Vernier.
+						//cfdBits = (eventfragment->Cfd >> 4);  // discard vernier bits
+						//tsBits  = eventfragment->TimeStampLow & 0x007fffff;
+                  cfdBits = eventfragment->Cfd;  // Keep vernier bits
+						tsBits  = (eventfragment->TimeStampLow & 0x007fffff)<<4; // Shift up to match scale of cfdbits with vernier
 						// probably should check that there hasn't been any wrap around here
 						eventfragment->TimeToTrig = tsBits - cfdBits;
 					} else if ( eventfragment->DigitizerType == "tig64" ) {
